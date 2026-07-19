@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased (2)
+
+- Added `docs/REQUIREMENTS_METHODOLOGY.md`: the shared DO-178-inspired
+  requirements-recovery scheme (HLR/LLR levels, ID prefixes per repo,
+  traceability-matrix format, verification-method vocabulary) used across
+  all four repositories in this system. `smart-dynamic-hedge` is the
+  first repo to apply it (`requirements/HLR.md`/`LLR.md`/`TRACEABILITY.md`
+  there); `market-intelligence-mcp` and `trade-guard-mcp` haven't had a
+  recovery pass yet.
+
 ## Unreleased
 
 - Fixed `common.schema.json#/$defs/decimal-string`: the pattern alone

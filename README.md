@@ -11,6 +11,11 @@ concepts. All three repositories should compile or validate against the same
 schema version rather than maintaining their own copies of `TradeIntent`,
 `EvidenceBundle`, `InstrumentId`, and related types.
 
+This repository also hosts the shared, DO-178-inspired requirements
+methodology (`docs/REQUIREMENTS_METHODOLOGY.md`) all four repositories use
+for requirements recovery and traceability — see `smart-dynamic-hedge`'s
+`requirements/` directory for the first repository to apply it.
+
 ## Status
 
 This is a **Phase 1** scaffold: hand-written JSON Schema 2020-12 documents and
