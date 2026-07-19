@@ -1,0 +1,28 @@
+{
+  "description": "common.schema.json#/$defs/decimal-string boundary and negative cases",
+  "schema-ref": "common.schema.json#/$defs/decimal-string",
+  "tests": [
+    { "description": "plain zero", "data": "0", "valid": true },
+    { "description": "positive integer", "data": "125", "valid": true },
+    { "description": "small negative decimal", "data": "-0.5", "valid": true },
+    { "description": "trailing zero after decimal point is fine", "data": "5.0", "valid": true },
+    { "description": "many decimal places", "data": "1.123456789012345", "valid": true },
+    { "description": "negative integer", "data": "-42", "valid": true },
+    { "description": "negative zero is rejected", "data": "-0", "valid": false },
+    { "description": "negative zero with one decimal zero is rejected", "data": "-0.0", "valid": false },
+    { "description": "negative zero with many decimal zeros is rejected", "data": "-0.000", "valid": false },
+    { "description": "leading zero on multi-digit integer is rejected", "data": "01", "valid": false },
+    { "description": "leading zero on negative multi-digit integer is rejected", "data": "-01", "valid": false },
+    { "description": "bare leading decimal point is rejected", "data": ".5", "valid": false },
+    { "description": "trailing decimal point with no digits is rejected", "data": "1.", "valid": false },
+    { "description": "explicit plus sign is rejected", "data": "+5", "valid": false },
+    { "description": "exponent notation is rejected", "data": "1e10", "valid": false },
+    { "description": "NaN literal is rejected", "data": "NaN", "valid": false },
+    { "description": "Infinity literal is rejected", "data": "Infinity", "valid": false },
+    { "description": "empty string is rejected", "data": "", "valid": false },
+    { "description": "whitespace is rejected", "data": " 1", "valid": false },
+    { "description": "comma thousands separator is rejected", "data": "1,000", "valid": false },
+    { "description": "non-string number is rejected (wrong type)", "data": 5, "valid": false },
+    { "description": "null is rejected", "data": null, "valid": false }
+  ]
+}

@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased
+
+- Fixed `common.schema.json#/$defs/decimal-string`: the pattern alone
+  accepted `-0`, `-0.0`, `-0.000`, etc. (negative zero), contradicting its
+  own description ("negative zero are invalid"). Added a `not` constraint
+  to reject it while still allowing genuine negative decimals like `-0.5`.
+  Found by the new adversarial test-case suite, not by inspection.
+- Added `testdata/cases/`: a JSON-Schema-Test-Suite-style suite of
+  self-describing `{schema-ref, tests: [{data, valid}]}` files exercising
+  boundary and negative cases for `decimal-string`, `schema-version`, and
+  `sha256-hash` (leading zeros, exponent notation, wrong length/case hex,
+  missing prefixes, wrong JSON type, etc.) — 41 cases, all currently
+  passing. This is the enforcement mechanism for the "SQLite-grade testing"
+  bar: every pattern in this package needs a case file proving it rejects
+  what it claims to reject, not just that it accepts a happy-path example.
+- `scripts/validate_schemas.py` now runs the case suite in addition to
+  schema well-formedness and golden-fixture checks.
+
 ## 2.0.0 — 2026-07-19
 
 Initial schema set, matching `04-shared-contracts-and-tool-catalog.md` from the

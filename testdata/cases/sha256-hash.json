@@ -1,0 +1,51 @@
+{
+  "description": "common.schema.json#/$defs/sha256-hash strict lowercase-hex format",
+  "schema-ref": "common.schema.json#/$defs/sha256-hash",
+  "tests": [
+    {
+      "description": "real sha256 of the empty string",
+      "data": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "valid": true
+    },
+    {
+      "description": "all-zero 64 hex digits",
+      "data": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "valid": true
+    },
+    {
+      "description": "mixed hex digits, exactly 64",
+      "data": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "valid": true
+    },
+    {
+      "description": "uppercase hex digits are rejected",
+      "data": "sha256:0123456789abcdef0123456789abcdef0123456789ABCDEF0123456789ABCDEF",
+      "valid": false
+    },
+    {
+      "description": "missing sha256 prefix is rejected",
+      "data": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "valid": false
+    },
+    {
+      "description": "too short is rejected",
+      "data": "sha256:0123456789abcdef",
+      "valid": false
+    },
+    {
+      "description": "too long is rejected",
+      "data": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdeff",
+      "valid": false
+    },
+    {
+      "description": "non-hex character is rejected",
+      "data": "sha256:g123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "valid": false
+    },
+    {
+      "description": "empty hex part is rejected",
+      "data": "sha256:",
+      "valid": false
+    }
+  ]
+}

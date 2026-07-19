@@ -6,8 +6,11 @@
   "$defs": {
     "decimal-string": {
       "type": "string",
-      "description": "Decimal-safe amount, price, quantity, rate, or FX value. Never binary floating point at an external boundary. NaN, Infinity, and negative zero are invalid.",
-      "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$"
+      "description": "Decimal-safe amount, price, quantity, rate, or FX value. Never binary floating point at an external boundary. NaN, Infinity, and negative zero are invalid. No leading zeros (except '0' itself), no leading '+', no bare '.5' or trailing '5.', no exponent notation.",
+      "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+      "not": {
+        "pattern": "^-0(\\.0+)?$"
+      }
     },
     "utc-timestamp": {
       "type": "string",

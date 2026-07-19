@@ -1,0 +1,15 @@
+{
+  "description": "common.schema.json#/$defs/schema-version strict x.y.z pattern",
+  "schema-ref": "common.schema.json#/$defs/schema-version",
+  "tests": [
+    { "description": "simple version", "data": "2.0.0", "valid": true },
+    { "description": "multi-digit components", "data": "10.23.456", "valid": true },
+    { "description": "zero version", "data": "0.0.0", "valid": true },
+    { "description": "missing patch component", "data": "2.0", "valid": false },
+    { "description": "pre-release suffix not supported", "data": "2.0.0-beta", "valid": false },
+    { "description": "build metadata suffix not supported", "data": "2.0.0+build1", "valid": false },
+    { "description": "v-prefix rejected", "data": "v2.0.0", "valid": false },
+    { "description": "empty string rejected", "data": "", "valid": false },
+    { "description": "four components rejected", "data": "2.0.0.0", "valid": false }
+  ]
+}

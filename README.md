@@ -31,8 +31,27 @@ service. See `CHANGELOG.md` for what exists today.
 ```text
 schemas/2.0.0/     JSON Schema 2020-12 documents, one concept per file
 testdata/golden/   Example instances validated against the schemas above
+testdata/cases/    Boundary/negative test-case suites (JSON-Schema-Test-Suite style)
 scripts/           Validation tooling (no service code lives in this repo)
 ```
+
+## Testing philosophy
+
+Every constraining pattern in `schemas/2.0.0/` needs a matching file in
+`testdata/cases/` proving it rejects what it claims to reject, not just
+that a happy-path example passes. `decimal-string`'s pattern once silently
+accepted negative zero (`-0`, `-0.0`, ...) despite its own description
+saying that's invalid — the boundary-case suite caught it, ad hoc
+inspection hadn't. Each case file is self-describing:
+
+```json
+{
+  "schema-ref": "common.schema.json#/$defs/decimal-string",
+  "tests": [{ "description": "...", "data": "-0", "valid": false }]
+}
+```
+
+Add cases *before* trusting a new pattern, not after a bug report.
 
 ## Naming conventions
 
@@ -63,8 +82,9 @@ python scripts/validate_schemas.py
 ```
 
 This checks that every schema is a well-formed Draft 2020-12 document with
-resolvable internal `$ref`s, and that every fixture under `testdata/golden/`
-validates against its mapped schema.
+resolvable internal `$ref`s, that every fixture under `testdata/golden/`
+validates against its mapped schema, and that every boundary/negative case
+under `testdata/cases/` gets the pass/fail verdict it declares.
 
 ## Where this comes from
 
