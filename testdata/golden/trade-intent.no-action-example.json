@@ -1,0 +1,27 @@
+{
+  "schema-version": "2.0.0",
+  "intent-id": "3f4b3c9a-9b7e-4a3d-8f2f-000000000001",
+  "strategy-id": "whale-follow-v1",
+  "decision-id": "3f4b3c9a-9b7e-4a3d-8f2f-000000000002",
+  "account-alias": "paper-global-1",
+  "instrument": {
+    "schema-version": "2.0.0",
+    "instrument-id": "us-equity-spy-arcx",
+    "asset-class": "equity",
+    "symbol": "SPY",
+    "venue-mic": "ARCX",
+    "contract-multiplier": "1"
+  },
+  "side": "buy",
+  "position-effect": "unknown",
+  "order-type": "limit",
+  "quantity": "0",
+  "limit-price": null,
+  "time-in-force": "day",
+  "decision-time": "2026-07-19T14:30:00Z",
+  "confidence": 0.0,
+  "rationale": "Evidence stale beyond policy; no-action per source-policy freshness gate.",
+  "signal-ids": [],
+  "mode": "paper",
+  "idempotency-key": "no-action-2026-07-19T14:30:00Z-spy"
+}

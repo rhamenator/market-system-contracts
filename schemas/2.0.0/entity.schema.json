@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.smart-dynamic-hedge.dev/market-system-contracts/2.0.0/entity.schema.json",
+  "title": "EntityId / ActorProfile / ActorRelationship",
+  "description": "Actors (issuers, insiders, officials, whales, wallets, etc.) resolved by role and effective date, never by hard-coded current name.",
+  "$defs": {
+    "entity-type": {
+      "type": "string",
+      "enum": [
+        "issuer", "corporate-insider", "director-officer-pdmr", "beneficial-owner",
+        "institutional-manager", "activist-investor", "sovereign-wealth-fund",
+        "government-entity", "elected-official", "appointed-official",
+        "related-person", "related-entity", "promoter-influencer",
+        "market-maker", "fund", "anonymous-whale", "wallet-or-wallet-cluster",
+        "exchange-venue", "broker", "news-source-organization", "other", "unknown"
+      ]
+    },
+    "entity-profile": {
+      "type": "object",
+      "required": ["entity-id", "entity-type"],
+      "properties": {
+        "entity-id": { "$ref": "common.schema.json#/$defs/opaque-id" },
+        "entity-type": { "$ref": "#/$defs/entity-type" },
+        "display-name": { "type": "string" },
+        "jurisdiction": { "type": ["string", "null"] },
+        "role-effective-from": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+        "role-effective-to": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+        "provenance": { "type": "object" }
+      },
+      "additionalProperties": false
+    },
+    "relationship": {
+      "type": "object",
+      "required": ["relationship-id", "from-entity-id", "to-entity-id", "relationship-type", "effective-from", "confidence", "evidence-ids", "legal-status"],
+      "properties": {
+        "relationship-id": { "$ref": "common.schema.json#/$defs/opaque-id" },
+        "from-entity-id": { "$ref": "common.schema.json#/$defs/opaque-id" },
+        "to-entity-id": { "$ref": "common.schema.json#/$defs/opaque-id" },
+        "relationship-type": {
+          "type": "string",
+          "enum": [
+            "officer-of", "director-of", "spouse-of", "dependent-of",
+            "beneficial-owner-of", "controls", "managed-by", "affiliated-with",
+            "publicly-endorsed", "counterparty-to", "other"
+          ]
+        },
+        "effective-from": { "$ref": "common.schema.json#/$defs/utc-timestamp" },
+        "effective-to": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+        "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+        "evidence-ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/opaque-id" } },
+        "legal-status": { "$ref": "legal-status.schema.json#/$defs/legal-status" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

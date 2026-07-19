@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.smart-dynamic-hedge.dev/market-system-contracts/2.0.0/tool-descriptor.schema.json",
+  "title": "ToolDescriptor",
+  "description": "Every MCP or internal tool declares this shape. MCP annotations are descriptive hints only; the service enforces these properties independently.",
+  "type": "object",
+  "required": [
+    "name", "version", "description", "risk-tier", "read-only", "destructive",
+    "idempotent", "open-world", "allowed-modes", "allowed-roles"
+  ],
+  "properties": {
+    "name": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "version": { "$ref": "common.schema.json#/$defs/schema-version" },
+    "description": { "type": "string" },
+    "input-schema-ref": { "type": ["string", "null"] },
+    "output-schema-ref": { "type": ["string", "null"] },
+    "risk-tier": {
+      "type": "string",
+      "enum": ["read-only-open-world", "read-only-sensitive", "paper-side-effect", "live-side-effect", "admin"]
+    },
+    "read-only": { "type": "boolean" },
+    "destructive": { "type": "boolean" },
+    "idempotent": { "type": "boolean" },
+    "open-world": { "type": "boolean" },
+    "allowed-modes": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["observe", "advisory", "paper", "paper-autonomous", "guarded-live", "guarded-live-autonomous"] }
+    },
+    "allowed-roles": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["observer", "model", "researcher", "operator", "legal-reviewer", "admin"] }
+    },
+    "required-capabilities": { "type": "array", "items": { "type": "string" } },
+    "timeout-ms": { "type": ["integer", "null"], "minimum": 1 },
+    "rate-limit": { "type": "object" },
+    "cache-policy": { "type": "object" },
+    "credential-scope": { "type": ["string", "null"] },
+    "output-contains-untrusted-content": { "type": "boolean" },
+    "audit-policy": { "type": ["string", "null"] }
+  },
+  "additionalProperties": false
+}

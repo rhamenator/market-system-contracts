@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.smart-dynamic-hedge.dev/market-system-contracts/2.0.0/jurisdiction-venue-profile.schema.json",
+  "title": "JurisdictionProfile / VenueProfile",
+  "description": "Effective-dated jurisdiction and venue rules. Never assume U.S. hours, T+1 settlement, USD, whole shares, or a 100x option multiplier apply elsewhere. Provider capabilities are runtime-discovered, not assumed.",
+  "$defs": {
+    "jurisdiction-profile": {
+      "type": "object",
+      "required": ["jurisdiction-code", "effective-from"],
+      "properties": {
+        "jurisdiction-code": { "type": "string" },
+        "regulatory-regime-ids": { "type": "array", "items": { "type": "string" } },
+        "effective-from": { "$ref": "common.schema.json#/$defs/utc-timestamp" },
+        "effective-to": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+        "short-sale-locate-rules": { "type": "object" },
+        "retail-professional-classification": { "type": "object" },
+        "crypto-derivative-availability": { "type": "object" },
+        "stamp-duty-or-transaction-tax": { "type": "object" }
+      },
+      "additionalProperties": true
+    },
+    "venue-profile": {
+      "type": "object",
+      "required": ["venue-mic", "market-timezone", "effective-from"],
+      "properties": {
+        "venue-mic": { "type": "string" },
+        "market-timezone": { "type": "string" },
+        "effective-from": { "$ref": "common.schema.json#/$defs/utc-timestamp" },
+        "effective-to": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+        "holiday-calendar-id": { "type": ["string", "null"] },
+        "session-phases": { "type": "array", "items": { "type": "object" } },
+        "settlement-convention": { "type": ["string", "null"] },
+        "supported-currencies": { "type": "array", "items": { "type": "string" } },
+        "min-tick-rules": { "type": "object" },
+        "min-lot-rules": { "type": "object" },
+        "price-bands-and-collars": { "type": "object" },
+        "circuit-breakers": { "type": "object" },
+        "allowed-order-types": { "type": "array", "items": { "type": "string" } },
+        "allowed-time-in-force": { "type": "array", "items": { "type": "string" } },
+        "market-data-entitlement-required": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

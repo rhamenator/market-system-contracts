@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.smart-dynamic-hedge.dev/market-system-contracts/2.0.0/source-use-decision.schema.json",
+  "title": "SourceUseDecision",
+  "description": "Versioned, per-source legal/licensing decision. Unknown or contradictory policy fails closed for live execution. Deterministic engine only — never model-decided.",
+  "type": "object",
+  "required": [
+    "source-id", "policy-version", "public-access", "automated-retrieval",
+    "commercial-use", "trading-use", "redistribution", "reviewed-at", "reviewed-by"
+  ],
+  "properties": {
+    "source-id": { "$ref": "common.schema.json#/$defs/opaque-id" },
+    "policy-version": { "type": "string" },
+    "public-access": { "type": "boolean" },
+    "automated-retrieval": { "$ref": "#/$defs/use-permission" },
+    "commercial-use": { "$ref": "#/$defs/use-permission" },
+    "trading-use": { "$ref": "#/$defs/use-permission" },
+    "redistribution": { "$ref": "#/$defs/use-permission" },
+    "model-training": { "$ref": "#/$defs/use-permission" },
+    "retention-days": { "type": ["integer", "null"], "minimum": 0 },
+    "attribution-required": { "type": "boolean" },
+    "terms-snapshot-hash": { "anyOf": [{ "$ref": "common.schema.json#/$defs/sha256-hash" }, { "type": "null" }] },
+    "robots-snapshot-hash": { "anyOf": [{ "$ref": "common.schema.json#/$defs/sha256-hash" }, { "type": "null" }] },
+    "contract-id": { "type": ["string", "null"] },
+    "reviewed-at": { "$ref": "common.schema.json#/$defs/utc-timestamp" },
+    "reviewed-by": { "type": "string" },
+    "reason-codes": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "use-permission": {
+      "type": "string",
+      "enum": [
+        "allowed", "allowed-with-attribution", "allowed-under-contract",
+        "research-only", "redistribution-prohibited", "execution-prohibited",
+        "legal-review-required", "unknown", "disabled",
+        "prohibited-or-unclear"
+      ]
+    }
+  }
+}

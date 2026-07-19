@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.smart-dynamic-hedge.dev/market-system-contracts/2.0.0/signal-assessment.schema.json",
+  "title": "SignalAssessment",
+  "description": "Output of every heuristic, statistical model, and LLM-derived assessment. Must include a no-action path; never force every event into buy or sell.",
+  "type": "object",
+  "required": [
+    "signal-id", "signal-type", "direction", "score", "confidence",
+    "evidence-bundle-id", "model-uri", "legal-status", "intent-inferred"
+  ],
+  "properties": {
+    "signal-id": { "$ref": "common.schema.json#/$defs/opaque-id" },
+    "signal-type": {
+      "type": "string",
+      "enum": [
+        "possible-informed-trading", "whale-follow", "whale-fade",
+        "promotion-distribution-risk", "issuer-buyback-support", "dilution-risk",
+        "insider-cluster", "activist-accumulation", "political-policy-exposure",
+        "coordinated-promotion-risk", "market-regime", "other"
+      ]
+    },
+    "instrument-ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/opaque-id" } },
+    "actor-ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/opaque-id" } },
+    "direction": {
+      "type": "string",
+      "enum": ["bullish", "bearish", "volatility-up", "volatility-down", "neutral", "uncertain"]
+    },
+    "score": { "type": "number", "minimum": -1.0, "maximum": 1.0 },
+    "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+    "calibrated-probability": { "anyOf": [{ "$ref": "common.schema.json#/$defs/confidence" }, { "type": "null" }] },
+    "follow-score": { "anyOf": [{ "$ref": "common.schema.json#/$defs/confidence" }, { "type": "null" }] },
+    "fade-score": { "anyOf": [{ "$ref": "common.schema.json#/$defs/confidence" }, { "type": "null" }] },
+    "no-action-score": { "anyOf": [{ "$ref": "common.schema.json#/$defs/confidence" }, { "type": "null" }] },
+    "horizon-seconds": { "type": ["integer", "null"], "minimum": 0 },
+    "valid-until": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+    "signal-half-life-seconds": { "type": ["integer", "null"], "minimum": 0 },
+    "data-lag-seconds": { "type": ["integer", "null"], "minimum": 0 },
+    "evidence-bundle-id": { "$ref": "common.schema.json#/$defs/opaque-id" },
+    "evidence-ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/opaque-id" } },
+    "feature-version": { "type": ["string", "null"] },
+    "model-uri": { "type": "string" },
+    "model-version": { "type": ["string", "null"] },
+    "regime": { "type": ["string", "null"] },
+    "alternative-hypotheses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "probability"],
+        "properties": {
+          "name": { "type": "string" },
+          "probability": { "$ref": "common.schema.json#/$defs/confidence" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "invalidation-conditions": { "type": "array", "items": { "type": "string" } },
+    "legal-status": { "$ref": "legal-status.schema.json#/$defs/legal-status" },
+    "intent-inferred": { "type": "boolean", "description": "Must remain false unless an authoritative legal source supports an intent finding." },
+    "limitations": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": false
+}

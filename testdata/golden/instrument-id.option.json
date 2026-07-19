@@ -1,0 +1,17 @@
+{
+  "schema-version": "2.0.0",
+  "instrument-id": "us-option-spy-2026-09-18-c-450-cboe",
+  "asset-class": "option",
+  "symbol": "SPY260918C00450000",
+  "venue-mic": "OPRA",
+  "listing-jurisdiction": "US",
+  "primary-currency": "USD",
+  "expiry": "2026-09-18T20:00:00Z",
+  "strike": "450.00",
+  "option-right": "call",
+  "exercise-style": "american",
+  "contract-multiplier": "100",
+  "tick-size": "0.01",
+  "lot-size": "1",
+  "provider-identifiers": {}
+}

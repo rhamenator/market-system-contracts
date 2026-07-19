@@ -1,0 +1,17 @@
+{
+  "schema-version": "2.0.0",
+  "instrument-id": "us-equity-spy-arcx",
+  "asset-class": "equity",
+  "symbol": "SPY",
+  "venue-mic": "ARCX",
+  "listing-jurisdiction": "US",
+  "primary-currency": "USD",
+  "isin": "US78462F1030",
+  "figi": "BBG000BDTBL9",
+  "contract-multiplier": "1",
+  "tick-size": "0.01",
+  "lot-size": "1",
+  "provider-identifiers": {
+    "alpaca": "SPY"
+  }
+}

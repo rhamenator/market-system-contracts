@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.smart-dynamic-hedge.dev/market-system-contracts/2.0.0/common.schema.json",
+  "title": "Common scalar definitions",
+  "description": "Canonical scalar rules shared by every contract in this package. See README.md section 1.",
+  "$defs": {
+    "decimal-string": {
+      "type": "string",
+      "description": "Decimal-safe amount, price, quantity, rate, or FX value. Never binary floating point at an external boundary. NaN, Infinity, and negative zero are invalid.",
+      "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$"
+    },
+    "utc-timestamp": {
+      "type": "string",
+      "description": "UTC RFC 3339 timestamp with nanosecond capability. Provider/exchange-local timezone metadata is preserved separately, not encoded here.",
+      "format": "date-time"
+    },
+    "schema-version": {
+      "type": "string",
+      "description": "Semantic version of this record's schema.",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "opaque-id": {
+      "type": "string",
+      "description": "Opaque, stable identifier. Never a display symbol or human-readable name used as sole identity.",
+      "minLength": 1
+    },
+    "sha256-hash": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "extensible-enum": {
+      "description": "Convention: every enum in this package includes 'unknown' and 'other' so unrecognized provider codes round-trip safely instead of failing closed on parse.",
+      "type": "string"
+    }
+  }
+}

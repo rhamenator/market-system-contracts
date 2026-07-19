@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.smart-dynamic-hedge.dev/market-system-contracts/2.0.0/source-record.schema.json",
+  "title": "SourceRecord",
+  "description": "Immutable, append-only provenance record for a single retrieved item. Corrections create new revisions; they never overwrite history.",
+  "type": "object",
+  "required": [
+    "schema-version", "source-record-id", "source-id", "source-type",
+    "retrieval-method", "retrieved-time", "execution-eligible",
+    "redistribution-eligible", "revision", "correction-state",
+    "untrusted-text", "mnpi-classification"
+  ],
+  "properties": {
+    "schema-version": { "$ref": "common.schema.json#/$defs/schema-version" },
+    "source-record-id": { "$ref": "common.schema.json#/$defs/opaque-id" },
+    "source-id": { "$ref": "common.schema.json#/$defs/opaque-id" },
+    "provider-record-id": { "type": ["string", "null"] },
+    "source-type": {
+      "type": "string",
+      "enum": ["api", "mcp", "bulk-file", "official-filing", "rss", "licensed-feed", "web-page", "manual-public-record", "other"]
+    },
+    "jurisdiction": { "type": ["string", "null"] },
+    "retrieval-method": { "type": "string" },
+    "transaction-time": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+    "event-time": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+    "filing-time": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+    "published-time": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+    "public-availability-time": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+    "retrieved-time": { "$ref": "common.schema.json#/$defs/utc-timestamp" },
+    "corrected-time": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+    "source-url-hash": { "anyOf": [{ "$ref": "common.schema.json#/$defs/sha256-hash" }, { "type": "null" }] },
+    "content-hash": { "anyOf": [{ "$ref": "common.schema.json#/$defs/sha256-hash" }, { "type": "null" }] },
+    "raw-object-hash": { "anyOf": [{ "$ref": "common.schema.json#/$defs/sha256-hash" }, { "type": "null" }] },
+    "terms-snapshot-hash": { "anyOf": [{ "$ref": "common.schema.json#/$defs/sha256-hash" }, { "type": "null" }] },
+    "robots-snapshot-hash": { "anyOf": [{ "$ref": "common.schema.json#/$defs/sha256-hash" }, { "type": "null" }] },
+    "license-id": { "type": ["string", "null"] },
+    "allowed-use": { "type": "array", "items": { "type": "string" } },
+    "execution-eligible": { "type": "boolean" },
+    "redistribution-eligible": { "type": "boolean" },
+    "quality": { "anyOf": [{ "$ref": "common.schema.json#/$defs/confidence" }, { "type": "null" }] },
+    "staleness-seconds": { "type": ["integer", "null"], "minimum": 0 },
+    "expected-reporting-lag-seconds": { "type": ["integer", "null"], "minimum": 0 },
+    "revision": { "type": "integer", "minimum": 1 },
+    "correction-state": {
+      "type": "string",
+      "enum": ["original", "supersedes", "amends", "corrects", "withdraws", "provider-retracted", "parser-corrected", "entity-resolution-corrected"]
+    },
+    "untrusted-text": { "type": "boolean" },
+    "mnpi-classification": { "$ref": "legal-status.schema.json#/$defs/mnpi-classification" },
+    "parser-version": { "type": ["string", "null"] },
+    "provenance": { "type": "object" }
+  },
+  "additionalProperties": false
+}

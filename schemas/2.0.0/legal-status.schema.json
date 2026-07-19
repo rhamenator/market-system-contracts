@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.smart-dynamic-hedge.dev/market-system-contracts/2.0.0/legal-status.schema.json",
+  "title": "LegalStatus and MnpiClassification",
+  "description": "Structured, non-accusatory vocabulary. See 05-source-policy-and-legal-boundaries.md sections 3 and 6 in the originating prompt bundle.",
+  "$defs": {
+    "legal-status": {
+      "type": "string",
+      "enum": [
+        "observed", "inferred", "reported-by-source", "alleged-in-complaint",
+        "under-investigation", "charged", "settled-without-admission",
+        "settled-with-admission", "adjudicated-liable", "convicted",
+        "dismissed", "reversed", "unknown"
+      ]
+    },
+    "mnpi-classification": {
+      "type": "string",
+      "enum": [
+        "public-confirmed", "public-but-use-restricted", "publication-status-uncertain",
+        "ambiguous-origin", "suspected-nonpublic", "known-nonpublic", "prohibited-source"
+      ]
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.smart-dynamic-hedge.dev/market-system-contracts/2.0.0/instrument-id.schema.json",
+  "title": "InstrumentId",
+  "description": "Normalized, venue-aware instrument identity. A display symbol never uniquely identifies an instrument; duplicate tickers across venues must not collide.",
+  "type": "object",
+  "required": ["schema-version", "instrument-id", "asset-class", "symbol"],
+  "properties": {
+    "schema-version": { "$ref": "common.schema.json#/$defs/schema-version" },
+    "instrument-id": { "$ref": "common.schema.json#/$defs/opaque-id" },
+    "asset-class": {
+      "type": "string",
+      "enum": [
+        "equity", "etf", "fund", "bond", "option", "future", "future-option",
+        "fx-spot", "fx-forward", "crypto-spot", "crypto-perpetual",
+        "crypto-future", "commodity", "index", "cfd", "other"
+      ]
+    },
+    "symbol": { "type": "string", "description": "Display-only. Not an identity field." },
+    "venue-mic": { "type": ["string", "null"], "description": "ISO 10383 Market Identifier Code." },
+    "listing-jurisdiction": { "type": ["string", "null"] },
+    "primary-currency": { "type": ["string", "null"] },
+    "base-currency": { "type": ["string", "null"] },
+    "quote-currency": { "type": ["string", "null"] },
+    "isin": { "type": ["string", "null"] },
+    "figi": { "type": ["string", "null"] },
+    "lei": { "type": ["string", "null"] },
+    "cusip": { "type": ["string", "null"] },
+    "sedol": { "type": ["string", "null"] },
+    "ric": { "type": ["string", "null"] },
+    "crypto-asset-id": { "type": ["string", "null"] },
+    "crypto-network-id": { "type": ["string", "null"] },
+    "contract-address": { "type": ["string", "null"] },
+    "expiry": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+    "strike": { "anyOf": [{ "$ref": "common.schema.json#/$defs/decimal-string" }, { "type": "null" }] },
+    "option-right": { "type": ["string", "null"], "enum": ["call", "put", null] },
+    "exercise-style": { "type": ["string", "null"], "enum": ["american", "european", "bermudan", "other", null] },
+    "contract-multiplier": { "$ref": "common.schema.json#/$defs/decimal-string", "default": "1" },
+    "deliverable": { "type": "array", "items": { "type": "string" } },
+    "tick-size": { "anyOf": [{ "$ref": "common.schema.json#/$defs/decimal-string" }, { "type": "null" }] },
+    "lot-size": { "anyOf": [{ "$ref": "common.schema.json#/$defs/decimal-string" }, { "type": "null" }] },
+    "provider-identifiers": { "type": "object", "additionalProperties": { "type": "string" } }
+  },
+  "additionalProperties": false
+}

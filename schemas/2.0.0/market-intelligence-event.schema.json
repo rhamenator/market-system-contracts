@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.smart-dynamic-hedge.dev/market-system-contracts/2.0.0/market-intelligence-event.schema.json",
+  "title": "MarketIntelligenceEvent",
+  "description": "Normalized public-disclosure or whale event. Must preserve alternative explanations and never assert aggressor side/intent without a confidence and method.",
+  "type": "object",
+  "required": [
+    "event-id", "event-type", "actor-ids", "instrument-ids", "direction",
+    "source-record-ids", "execution-eligible", "alternative-explanations"
+  ],
+  "properties": {
+    "event-id": { "$ref": "common.schema.json#/$defs/opaque-id" },
+    "event-type": {
+      "type": "string",
+      "enum": [
+        "political-transaction-disclosure", "insider-transaction", "beneficial-ownership-change",
+        "institutional-holdings", "issuer-repurchase", "issuer-issuance", "large-trade",
+        "block-trade", "dark-pool-print", "options-flow", "futures-positioning",
+        "on-chain-transfer", "exchange-inflow", "public-statement", "policy-event",
+        "promotion-event", "other"
+      ]
+    },
+    "actor-ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/opaque-id" } },
+    "issuer-or-asset-ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/opaque-id" } },
+    "instrument-ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/opaque-id" } },
+    "direction": {
+      "type": "string",
+      "enum": ["buy", "sell", "long", "short", "transfer-in", "transfer-out", "issuance", "repurchase", "unknown"]
+    },
+    "direction-confidence": { "anyOf": [{ "$ref": "common.schema.json#/$defs/confidence" }, { "type": "null" }] },
+    "quantity": { "anyOf": [{ "$ref": "common.schema.json#/$defs/decimal-string" }, { "type": "null" }] },
+    "notional": { "anyOf": [{ "$ref": "common.schema.json#/$defs/decimal-string" }, { "type": "null" }] },
+    "reported-value-range": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "min": { "$ref": "common.schema.json#/$defs/decimal-string" },
+            "max": { "$ref": "common.schema.json#/$defs/decimal-string" },
+            "currency": { "type": "string" }
+          },
+          "required": ["min", "max"],
+          "additionalProperties": false
+        },
+        { "type": "null" }
+      ]
+    },
+    "price": { "anyOf": [{ "$ref": "common.schema.json#/$defs/decimal-string" }, { "type": "null" }] },
+    "venue": { "type": ["string", "null"] },
+    "transaction-time": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+    "public-availability-time": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+    "reporting-lag-seconds": { "type": ["integer", "null"], "minimum": 0 },
+    "source-record-ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/opaque-id" }, "minItems": 1 },
+    "execution-eligible": { "type": "boolean" },
+    "alternative-explanations": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "e.g. portfolio-rebalance, hedge, scheduled-plan, market-making, arbitrage, index-rebalance, forced-liquidation, tax-planning."
+    }
+  },
+  "additionalProperties": false
+}

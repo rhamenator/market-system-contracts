@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.smart-dynamic-hedge.dev/market-system-contracts/2.0.0/trade-intent.schema.json",
+  "title": "TradeIntent",
+  "description": "The only object that may become an order. Produced by smart-dynamic-hedge, independently re-validated and priced by trade-guard-mcp, which owns final instrument resolution, price refresh, and policy enforcement.",
+  "type": "object",
+  "required": [
+    "schema-version", "intent-id", "strategy-id", "decision-id", "account-alias",
+    "instrument", "side", "order-type", "quantity", "time-in-force",
+    "decision-time", "confidence", "signal-ids", "mode", "idempotency-key"
+  ],
+  "properties": {
+    "schema-version": { "$ref": "common.schema.json#/$defs/schema-version" },
+    "intent-id": { "$ref": "common.schema.json#/$defs/opaque-id" },
+    "strategy-id": { "type": "string" },
+    "decision-id": { "$ref": "common.schema.json#/$defs/opaque-id" },
+    "account-alias": { "type": "string" },
+    "instrument": { "$ref": "instrument-id.schema.json" },
+    "side": { "type": "string", "enum": ["buy", "sell", "sell-short", "buy-to-cover"] },
+    "position-effect": { "type": "string", "enum": ["open", "close", "reduce", "increase", "unknown"] },
+    "order-type": {
+      "type": "string",
+      "enum": ["market", "limit", "stop", "stop-limit", "market-on-close", "limit-on-close", "peg", "trailing-stop", "multi-leg", "other"]
+    },
+    "quantity": { "$ref": "common.schema.json#/$defs/decimal-string" },
+    "limit-price": { "anyOf": [{ "$ref": "common.schema.json#/$defs/decimal-string" }, { "type": "null" }] },
+    "stop-price": { "anyOf": [{ "$ref": "common.schema.json#/$defs/decimal-string" }, { "type": "null" }] },
+    "time-in-force": { "type": "string" },
+    "session": { "type": ["string", "null"] },
+    "extended-hours": { "type": "boolean", "default": false },
+    "max-slippage-bps": { "anyOf": [{ "$ref": "common.schema.json#/$defs/decimal-string" }, { "type": "null" }] },
+    "expires-at": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+    "decision-time": { "$ref": "common.schema.json#/$defs/utc-timestamp" },
+    "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+    "rationale": { "type": ["string", "null"], "maxLength": 4000 },
+    "signal-ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/opaque-id" } },
+    "evidence-bundle-id": { "type": ["string", "null"] },
+    "evidence-bundle-hash": { "anyOf": [{ "$ref": "common.schema.json#/$defs/sha256-hash" }, { "type": "null" }] },
+    "deterministic-input-hash": { "anyOf": [{ "$ref": "common.schema.json#/$defs/sha256-hash" }, { "type": "null" }] },
+    "model-uri": { "type": ["string", "null"] },
+    "model-version": { "type": ["string", "null"] },
+    "caller-id": { "type": ["string", "null"] },
+    "mode": {
+      "type": "string",
+      "enum": ["observe", "advisory", "paper", "paper-autonomous", "guarded-live", "guarded-live-autonomous"]
+    },
+    "idempotency-key": { "type": "string", "minLength": 1 }
+  },
+  "additionalProperties": false
+}

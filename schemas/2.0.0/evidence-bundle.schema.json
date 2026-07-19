@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.smart-dynamic-hedge.dev/market-system-contracts/2.0.0/evidence-bundle.schema.json",
+  "title": "EvidenceBundle",
+  "description": "Immutable, signed/attested bundle of evidence backing a signal or trade intent. trade-guard-mcp independently verifies this before any live intent is authorized.",
+  "type": "object",
+  "required": [
+    "evidence-bundle-id", "created-at", "records", "bundle-purpose",
+    "all-records-execution-eligible", "quarantine-count", "canonical-hash"
+  ],
+  "properties": {
+    "evidence-bundle-id": { "$ref": "common.schema.json#/$defs/opaque-id" },
+    "created-at": { "$ref": "common.schema.json#/$defs/utc-timestamp" },
+    "decision-time": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source-record-id", "mnpi-classification", "execution-eligible"],
+        "properties": {
+          "source-record-id": { "$ref": "common.schema.json#/$defs/opaque-id" },
+          "content-hash": { "anyOf": [{ "$ref": "common.schema.json#/$defs/sha256-hash" }, { "type": "null" }] },
+          "source-use-decision-id": { "type": ["string", "null"] },
+          "mnpi-classification": { "$ref": "legal-status.schema.json#/$defs/mnpi-classification" },
+          "public-availability-time": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
+          "freshness-seconds": { "type": ["integer", "null"], "minimum": 0 },
+          "execution-eligible": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "bundle-purpose": {
+      "type": "string",
+      "enum": ["research", "advisory", "paper-execution", "live-execution"]
+    },
+    "all-records-execution-eligible": { "type": "boolean" },
+    "quarantine-count": { "type": "integer", "minimum": 0 },
+    "service-attestation": { "type": ["string", "null"], "description": "Signed token or signature from market-intelligence-mcp." },
+    "canonical-hash": { "$ref": "common.schema.json#/$defs/sha256-hash" }
+  },
+  "additionalProperties": false
+}
