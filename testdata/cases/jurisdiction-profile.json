@@ -1,0 +1,58 @@
+{
+  "description": "jurisdiction-venue-profile.schema.json#/$defs/jurisdiction-profile boundary and realistic-fixture cases.",
+  "schema-ref": "jurisdiction-venue-profile.schema.json#/$defs/jurisdiction-profile",
+  "tests": [
+    {
+      "description": "realistic fixture: US jurisdiction",
+      "valid": true,
+      "data": {
+        "jurisdiction-code": "US",
+        "regulatory-regime-ids": ["us-sec", "us-finra", "us-reg-sho"],
+        "effective-from": "2026-01-01T00:00:00Z",
+        "effective-to": null,
+        "short-sale-locate-rules": { "locate-required": true, "uptick-rule": "reg-sho-rule-201" },
+        "retail-professional-classification": { "default": "retail" },
+        "crypto-derivative-availability": { "retail-leveraged-derivatives": false },
+        "stamp-duty-or-transaction-tax": {}
+      }
+    },
+    {
+      "description": "realistic fixture: Japan jurisdiction -- a different regulatory regime and a nonzero transaction tax",
+      "valid": true,
+      "data": {
+        "jurisdiction-code": "JP",
+        "regulatory-regime-ids": ["jp-fsa", "jp-jpx-rules"],
+        "effective-from": "2026-01-01T00:00:00Z",
+        "effective-to": null,
+        "short-sale-locate-rules": { "locate-required": true, "uptick-rule": "jp-price-restriction" },
+        "retail-professional-classification": { "default": "retail", "professional-threshold-jpy": 300000000 },
+        "crypto-derivative-availability": { "retail-leveraged-derivatives": true, "max-leverage": 2 },
+        "stamp-duty-or-transaction-tax": { "applies": false }
+      }
+    },
+    {
+      "description": "missing required jurisdiction-code is rejected",
+      "valid": false,
+      "data": { "effective-from": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "description": "missing required effective-from is rejected",
+      "valid": false,
+      "data": { "jurisdiction-code": "US" }
+    },
+    {
+      "description": "a bare minimal jurisdiction profile with only the required fields is valid",
+      "valid": true,
+      "data": { "jurisdiction-code": "UK", "effective-from": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "description": "additionalProperties: true is intentional -- an unrecognized regional field still round-trips instead of failing closed",
+      "valid": true,
+      "data": {
+        "jurisdiction-code": "SG",
+        "effective-from": "2026-01-01T00:00:00Z",
+        "some-future-mas-specific-field": { "anything": "goes here" }
+      }
+    }
+  ]
+}

@@ -28,7 +28,19 @@
         "effective-from": { "$ref": "common.schema.json#/$defs/utc-timestamp" },
         "effective-to": { "anyOf": [{ "$ref": "common.schema.json#/$defs/utc-timestamp" }, { "type": "null" }] },
         "holiday-calendar-id": { "type": ["string", "null"] },
-        "session-phases": { "type": "array", "items": { "type": "object" } },
+        "session-phases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["phase-name", "opens-local-time", "closes-local-time"],
+            "properties": {
+              "phase-name": { "type": "string", "enum": ["pre-market", "regular", "auction-open", "auction-close", "after-hours", "overnight", "other"] },
+              "opens-local-time": { "type": "string", "description": "HH:MM in market-timezone, 24-hour." },
+              "closes-local-time": { "type": "string", "description": "HH:MM in market-timezone, 24-hour." }
+            },
+            "additionalProperties": false
+          }
+        },
         "settlement-convention": { "type": ["string", "null"] },
         "supported-currencies": { "type": "array", "items": { "type": "string" } },
         "min-tick-rules": { "type": "object" },

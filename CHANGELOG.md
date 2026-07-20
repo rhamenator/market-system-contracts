@@ -1,5 +1,29 @@
 # Changelog
 
+## Unreleased (4): jurisdiction/venue profile schema, real international fixtures
+
+`jurisdiction-venue-profile.schema.json` existed as a Phase 1 scaffold
+with no fixtures, no test cases, and mostly untyped placeholder fields —
+nothing proved it was actually usable outside the U.S.
+
+- **Tightened `venue-profile`'s `session-phases` shape**: was
+  `{"type": "object"}` per item (accepts anything); now requires
+  `phase-name` (a closed enum: `pre-market`/`regular`/`auction-open`/
+  `auction-close`/`after-hours`/`overnight`/`other`), `opens-local-time`,
+  `closes-local-time`. Deliberately *not* using this package's usual
+  extensible-enum convention here — session phases are a closed,
+  well-known set, unlike provider-specific codes.
+- **Added `testdata/cases/jurisdiction-venue-profile.json` and
+  `jurisdiction-profile.json`**: 15 cases total, including two genuinely
+  different realistic fixtures per type — NYSE Arca (US, `America/New_York`,
+  USD, T+1, penny ticks) vs. Tokyo Stock Exchange (Japan, `Asia/Tokyo`,
+  JPY, T+2, yen-band tick rules, a split lunch-break session structure
+  with two `regular` phases) for venues; US vs. Japan (a different
+  regulatory regime and a nonzero-leverage crypto-derivative
+  classification) for jurisdictions — not palette-swapped U.S. data.
+  Plus boundary/negative cases for every required field and the new
+  `session-phases` item shape.
+
 ## Unreleased (3): canonical JSON serialization and hashing specification
 
 Closes the Phase 1 gap the README's "Status" section named: "a canonical

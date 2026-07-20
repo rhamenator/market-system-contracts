@@ -1,0 +1,110 @@
+{
+  "description": "jurisdiction-venue-profile.schema.json#/$defs/venue-profile boundary and realistic-fixture cases. Two genuinely different venues (not palette-swapped US data) prove the schema is actually usable outside the U.S. -- different timezone, currency, tick convention, and session structure.",
+  "schema-ref": "jurisdiction-venue-profile.schema.json#/$defs/venue-profile",
+  "tests": [
+    {
+      "description": "realistic fixture: NYSE Arca (US equities)",
+      "valid": true,
+      "data": {
+        "venue-mic": "ARCX",
+        "market-timezone": "America/New_York",
+        "effective-from": "2026-01-01T00:00:00Z",
+        "effective-to": null,
+        "holiday-calendar-id": "us-nyse-holidays",
+        "session-phases": [
+          { "phase-name": "pre-market", "opens-local-time": "04:00", "closes-local-time": "09:30" },
+          { "phase-name": "regular", "opens-local-time": "09:30", "closes-local-time": "16:00" },
+          { "phase-name": "after-hours", "opens-local-time": "16:00", "closes-local-time": "20:00" }
+        ],
+        "settlement-convention": "T+1",
+        "supported-currencies": ["USD"],
+        "min-tick-rules": { "default": "0.01", "sub-dollar": "0.0001" },
+        "min-lot-rules": { "default": 1 },
+        "price-bands-and-collars": { "limit-up-limit-down": true },
+        "circuit-breakers": { "market-wide": [0.07, 0.13, 0.20] },
+        "allowed-order-types": ["market", "limit", "stop", "stop-limit", "market-on-close", "limit-on-close"],
+        "allowed-time-in-force": ["day", "gtc", "ioc", "fok"],
+        "market-data-entitlement-required": true
+      }
+    },
+    {
+      "description": "realistic fixture: Tokyo Stock Exchange (JPX) -- different timezone, currency, tick convention, no after-hours session, T+2 settlement",
+      "valid": true,
+      "data": {
+        "venue-mic": "XJPX",
+        "market-timezone": "Asia/Tokyo",
+        "effective-from": "2026-01-01T00:00:00Z",
+        "effective-to": null,
+        "holiday-calendar-id": "jp-jpx-holidays",
+        "session-phases": [
+          { "phase-name": "auction-open", "opens-local-time": "08:00", "closes-local-time": "09:00" },
+          { "phase-name": "regular", "opens-local-time": "09:00", "closes-local-time": "11:30" },
+          { "phase-name": "regular", "opens-local-time": "12:30", "closes-local-time": "15:00" },
+          { "phase-name": "auction-close", "opens-local-time": "15:00", "closes-local-time": "15:25" }
+        ],
+        "settlement-convention": "T+2",
+        "supported-currencies": ["JPY"],
+        "min-tick-rules": { "under-3000-jpy": "1", "3000-to-5000-jpy": "5", "over-5000-jpy": "10" },
+        "min-lot-rules": { "default": 100 },
+        "price-bands-and-collars": { "daily-price-limit-yen-bands": true },
+        "circuit-breakers": {},
+        "allowed-order-types": ["market", "limit"],
+        "allowed-time-in-force": ["day"],
+        "market-data-entitlement-required": true
+      }
+    },
+    {
+      "description": "missing required venue-mic is rejected",
+      "valid": false,
+      "data": {
+        "market-timezone": "America/New_York",
+        "effective-from": "2026-01-01T00:00:00Z"
+      }
+    },
+    {
+      "description": "missing required market-timezone is rejected",
+      "valid": false,
+      "data": {
+        "venue-mic": "ARCX",
+        "effective-from": "2026-01-01T00:00:00Z"
+      }
+    },
+    {
+      "description": "missing required effective-from is rejected",
+      "valid": false,
+      "data": {
+        "venue-mic": "ARCX",
+        "market-timezone": "America/New_York"
+      }
+    },
+    {
+      "description": "a session-phase missing closes-local-time is rejected",
+      "valid": false,
+      "data": {
+        "venue-mic": "ARCX",
+        "market-timezone": "America/New_York",
+        "effective-from": "2026-01-01T00:00:00Z",
+        "session-phases": [{ "phase-name": "regular", "opens-local-time": "09:30" }]
+      }
+    },
+    {
+      "description": "an unrecognized session-phase name is rejected (extensible-enum convention intentionally not applied here -- session phases are a closed, well-known set)",
+      "valid": false,
+      "data": {
+        "venue-mic": "ARCX",
+        "market-timezone": "America/New_York",
+        "effective-from": "2026-01-01T00:00:00Z",
+        "session-phases": [{ "phase-name": "lunch-break", "opens-local-time": "12:00", "closes-local-time": "13:00" }]
+      }
+    },
+    {
+      "description": "a bare minimal venue profile with only the required fields is valid",
+      "valid": true,
+      "data": {
+        "venue-mic": "XLON",
+        "market-timezone": "Europe/London",
+        "effective-from": "2026-01-01T00:00:00Z"
+      }
+    }
+  ]
+}
