@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Validate every schema in schemas/<version>/, every golden fixture, and
-every JSON-Schema-Test-Suite-style test-case file in testdata/cases/.
+"""Validate every schema in schemas/<version>/, every golden fixture,
+every JSON-Schema-Test-Suite-style test-case file in testdata/cases/, and
+the canonical-hashing test vectors in testdata/canonical-hashing/.
 
-Three things are checked, in order, for each schema version directory:
+Four things are checked, in order, for each schema version directory:
 
 1. every *.schema.json file is a well-formed Draft 2020-12 schema with
    resolvable internal $refs;
@@ -15,6 +16,10 @@ Three things are checked, in order, for each schema version directory:
    failure is a schema with no adversarial testing, not a schema that
    happens to be perfect; add cases before trusting a pattern.
 
+Then, independent of any schema version directory: every vector in
+testdata/canonical-hashing/vectors.json reproduces its own committed
+`canonical`/`sha256` fields from `input` — see docs/CANONICAL_HASHING.md.
+
 Run from anywhere; paths are resolved relative to this file's repo root.
 """
 from __future__ import annotations
@@ -26,6 +31,8 @@ from typing import Any
 
 from jsonschema.validators import Draft202012Validator
 from referencing import Registry, Resource
+
+from canonical_hash import canonical_hash, canonical_json
 
 
 def load_registry(schema_dir: Path) -> tuple[Registry, dict[str, dict]]:
@@ -103,6 +110,23 @@ def run_case_files(cases_dir: Path, docs: dict[str, dict], registry: Registry) -
     return failures
 
 
+def run_canonical_hashing_vectors(root: Path) -> int:
+    vectors_path = root / "testdata" / "canonical-hashing" / "vectors.json"
+    if not vectors_path.exists():
+        return 0
+    doc = json.loads(vectors_path.read_text(encoding="utf-8"))
+    failures = 0
+    for vector in doc["vectors"]:
+        expected_canonical = canonical_json(vector["input"])
+        expected_hash = canonical_hash(vector["input"])
+        if vector.get("canonical") != expected_canonical or vector.get("sha256") != expected_hash:
+            print(f"FAIL canonical-hashing vector {vector['name']!r}: committed canonical/sha256 do not match input")
+            failures += 1
+        else:
+            print(f"ok   canonical-hashing vector {vector['name']!r}")
+    return failures
+
+
 def main() -> int:
     root = Path(__file__).resolve().parent.parent
     failures = 0
@@ -141,10 +165,12 @@ def main() -> int:
         if cases_dir.exists():
             failures += run_case_files(cases_dir, docs, registry)
 
+    failures += run_canonical_hashing_vectors(root)
+
     if failures:
         print(f"\n{failures} failure(s)")
         return 1
-    print("\nAll schemas, golden fixtures, and test cases passed.")
+    print("\nAll schemas, golden fixtures, test cases, and canonical-hashing vectors passed.")
     return 0
 
 

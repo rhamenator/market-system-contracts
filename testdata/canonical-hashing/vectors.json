@@ -1,0 +1,128 @@
+{
+  "description": "Reference test vectors for docs/CANONICAL_HASHING.md. `canonical` and `sha256` are generated (not hand-transcribed) by `scripts/canonical_hash.py` from `input` -- run `python scripts/canonical_hash.py` after editing `input` fields, then `python scripts/canonical_hash.py --check` to verify a language implementation reproduces the same output.",
+  "vectors": [
+    {
+      "name": "empty object",
+      "input": {},
+      "canonical": "{}",
+      "sha256": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "name": "empty array",
+      "input": [],
+      "canonical": "[]",
+      "sha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "name": "null value",
+      "input": null,
+      "canonical": "null",
+      "sha256": "sha256:74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+    },
+    {
+      "name": "object keys are sorted regardless of insertion order",
+      "input": {
+        "z": 1,
+        "a": 2,
+        "m": 3
+      },
+      "canonical": "{\"a\":2,\"m\":3,\"z\":1}",
+      "sha256": "sha256:ebba85cfdc0a724b6cc327ecc545faeb38b9fe02eca603b430eb872f5cf75370"
+    },
+    {
+      "name": "nested objects are sorted at every level",
+      "input": {
+        "outer": {
+          "z": 1,
+          "a": 2
+        },
+        "aaa": true
+      },
+      "canonical": "{\"aaa\":true,\"outer\":{\"a\":2,\"z\":1}}",
+      "sha256": "sha256:4c8a00c0457e0d4066b8cb202fe0153bfdb1825080e996ab3b4006874e07ad95"
+    },
+    {
+      "name": "array element order is preserved, not sorted",
+      "input": [
+        3,
+        1,
+        2
+      ],
+      "canonical": "[3,1,2]",
+      "sha256": "sha256:51bda7ab4e44726cde71fcb6e4b515357059bb6b6dd5146d1fc50f73f11678c6"
+    },
+    {
+      "name": "arrays of objects: each object is sorted, array order is untouched",
+      "input": [
+        {
+          "b": 1,
+          "a": 2
+        },
+        {
+          "d": 3,
+          "c": 4
+        }
+      ],
+      "canonical": "[{\"a\":2,\"b\":1},{\"c\":4,\"d\":3}]",
+      "sha256": "sha256:b7674d3bc235a66d417357c0c4e21e834e6d899b1535ccdd3c988e9ce73d2c3d"
+    },
+    {
+      "name": "non-ASCII characters are emitted literally, not \\u-escaped",
+      "input": {
+        "text": "SPY 日本語 🚀"
+      },
+      "canonical": "{\"text\":\"SPY 日本語 🚀\"}",
+      "sha256": "sha256:2f9e5bd7e73957586c36f22d4bff966dff293948b5b41e3ada3db551a1ca25e4"
+    },
+    {
+      "name": "a decimal-string value is hashed as an opaque string, never as a number",
+      "input": {
+        "quantity": "10.50000000"
+      },
+      "canonical": "{\"quantity\":\"10.50000000\"}",
+      "sha256": "sha256:5a33ed32be4b98b115a125e5c4892c9b5be933bd8201af98997d3d66b2b5b9d8"
+    },
+    {
+      "name": "booleans and small integers",
+      "input": {
+        "flag": true,
+        "count": 0,
+        "revision": 7
+      },
+      "canonical": "{\"count\":0,\"flag\":true,\"revision\":7}",
+      "sha256": "sha256:30c1525670bc3ced35bca0b471e470ae2d15f738fd541b06d493d793b67148c2"
+    },
+    {
+      "name": "trade-intent.no-action-example.json golden fixture",
+      "input": {
+        "schema-version": "2.0.0",
+        "intent-id": "3f4b3c9a-9b7e-4a3d-8f2f-000000000001",
+        "strategy-id": "whale-follow-v1",
+        "decision-id": "3f4b3c9a-9b7e-4a3d-8f2f-000000000002",
+        "account-alias": "paper-global-1",
+        "instrument": {
+          "schema-version": "2.0.0",
+          "instrument-id": "us-equity-spy-arcx",
+          "asset-class": "equity",
+          "symbol": "SPY",
+          "venue-mic": "ARCX",
+          "contract-multiplier": "1"
+        },
+        "side": "buy",
+        "position-effect": "unknown",
+        "order-type": "limit",
+        "quantity": "0",
+        "limit-price": null,
+        "time-in-force": "day",
+        "decision-time": "2026-07-19T14:30:00Z",
+        "confidence": 0.0,
+        "rationale": "Evidence stale beyond policy; no-action per source-policy freshness gate.",
+        "signal-ids": [],
+        "mode": "paper",
+        "idempotency-key": "no-action-2026-07-19T14:30:00Z-spy"
+      },
+      "canonical": "{\"account-alias\":\"paper-global-1\",\"confidence\":0.0,\"decision-id\":\"3f4b3c9a-9b7e-4a3d-8f2f-000000000002\",\"decision-time\":\"2026-07-19T14:30:00Z\",\"idempotency-key\":\"no-action-2026-07-19T14:30:00Z-spy\",\"instrument\":{\"asset-class\":\"equity\",\"contract-multiplier\":\"1\",\"instrument-id\":\"us-equity-spy-arcx\",\"schema-version\":\"2.0.0\",\"symbol\":\"SPY\",\"venue-mic\":\"ARCX\"},\"intent-id\":\"3f4b3c9a-9b7e-4a3d-8f2f-000000000001\",\"limit-price\":null,\"mode\":\"paper\",\"order-type\":\"limit\",\"position-effect\":\"unknown\",\"quantity\":\"0\",\"rationale\":\"Evidence stale beyond policy; no-action per source-policy freshness gate.\",\"schema-version\":\"2.0.0\",\"side\":\"buy\",\"signal-ids\":[],\"strategy-id\":\"whale-follow-v1\",\"time-in-force\":\"day\"}",
+      "sha256": "sha256:6394da23f7d8fd275a0f86db9bd6bad76a0d0acadfb5a804b6e5e714f3060117"
+    }
+  ]
+}

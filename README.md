@@ -18,15 +18,17 @@ for requirements recovery and traceability — see `smart-dynamic-hedge`'s
 
 ## Status
 
-This is a **Phase 1** scaffold: hand-written JSON Schema 2020-12 documents and
-golden fixtures exist and validate. Not yet built:
+This is a **Phase 1** scaffold: hand-written JSON Schema 2020-12 documents,
+golden fixtures, and a canonical-hashing specification exist and validate.
+Not yet built:
 
-- generated Rust, Python, TypeScript, and C++ bindings;
-- a canonical JSON serialization and hashing specification (needed so
-  `canonical-hash` / `deterministic-input-hash` fields are reproducible
-  across languages);
-- a formal compatibility/versioning policy document;
-- cross-language round-trip test vectors.
+- generated Rust, Python, TypeScript, and C++ bindings (both Rust services
+  still hand-transcribe these schemas today — see `market_intelligence_core`
+  and `trade_guard_core`'s own doc comments, which say so explicitly);
+- a TypeScript/JavaScript canonical-hashing implementation (see
+  `docs/CANONICAL_HASHING.md`'s float-formatting caveat — untested for
+  that language family);
+- a formal compatibility/versioning policy document.
 
 Treat every schema here as reviewed but not yet load-bearing in a running
 service. See `CHANGELOG.md` for what exists today.
@@ -34,11 +36,24 @@ service. See `CHANGELOG.md` for what exists today.
 ## Layout
 
 ```text
-schemas/2.0.0/     JSON Schema 2020-12 documents, one concept per file
-testdata/golden/   Example instances validated against the schemas above
-testdata/cases/    Boundary/negative test-case suites (JSON-Schema-Test-Suite style)
-scripts/           Validation tooling (no service code lives in this repo)
+schemas/2.0.0/             JSON Schema 2020-12 documents, one concept per file
+testdata/golden/           Example instances validated against the schemas above
+testdata/cases/            Boundary/negative test-case suites (JSON-Schema-Test-Suite style)
+testdata/canonical-hashing/ Generated canonical-JSON/SHA-256 test vectors, see docs/CANONICAL_HASHING.md
+docs/                       Canonical-hashing spec, shared requirements methodology
+scripts/                    Validation tooling (no service code lives in this repo)
 ```
+
+## Canonical hashing
+
+See [`docs/CANONICAL_HASHING.md`](docs/CANONICAL_HASHING.md): the algorithm
+every `sha256-hash`-shaped field (`EvidenceBundle.canonical-hash`,
+`TradeIntent.deterministic-input-hash`, etc.) must follow so a hash computed
+in one repository/language is independently reverifiable in another —
+`market-intelligence-mcp`'s `evidence_builder::build_evidence_bundle` is the
+first real producer of such a hash, and its `market_intelligence_core::sha256`
+module carries tests that verify it against this package's own reference
+implementation's committed hashes, not just against itself.
 
 ## Testing philosophy
 
@@ -88,8 +103,17 @@ python scripts/validate_schemas.py
 
 This checks that every schema is a well-formed Draft 2020-12 document with
 resolvable internal `$ref`s, that every fixture under `testdata/golden/`
-validates against its mapped schema, and that every boundary/negative case
-under `testdata/cases/` gets the pass/fail verdict it declares.
+validates against its mapped schema, that every boundary/negative case
+under `testdata/cases/` gets the pass/fail verdict it declares, and that
+every vector under `testdata/canonical-hashing/` reproduces its own
+committed `canonical`/`sha256` fields from `input`.
+
+After editing a canonical-hashing vector's `input`, regenerate its
+`canonical`/`sha256` fields (don't hand-edit them) with:
+
+```bash
+python scripts/canonical_hash.py
+```
 
 ## Where this comes from
 

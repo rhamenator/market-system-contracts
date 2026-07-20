@@ -1,5 +1,51 @@
 # Changelog
 
+## Unreleased (3): canonical JSON serialization and hashing specification
+
+Closes the Phase 1 gap the README's "Status" section named: "a canonical
+JSON serialization and hashing specification (needed so `canonical-hash`
+/ `deterministic-input-hash` fields are reproducible across languages)".
+
+- **Added `docs/CANONICAL_HASHING.md`**: the algorithm (recursively sort
+  object keys by Unicode code point, leave array order alone, compact
+  UTF-8 JSON with non-ASCII emitted literally, SHA-256, `sha256:` prefix)
+  every `sha256-hash`-shaped field must follow. Documents a real,
+  verified cross-language hazard: numeric fields that are genuine JSON
+  `number`s rather than `decimal-string` (e.g. `TradeIntent.confidence`)
+  are not guaranteed to format identically in every language —
+  JavaScript's `JSON.stringify(0.0)` produces `"0"`, not `"0.0"`, unlike
+  Python and Rust's `serde_json`, which agree for this system's actual
+  values (verified, not assumed — see below).
+- **`scripts/canonical_hash.py`**: dependency-free reference
+  implementation (stdlib `json`/`hashlib` only), doubling as the
+  generator for `testdata/canonical-hashing/vectors.json` — vector
+  `canonical`/`sha256` fields are generated from `input`, never
+  hand-transcribed, same discipline as this package's decimal-string test
+  cases and `smart-dynamic-hedge`'s own "don't trust a memorized hash
+  constant" lesson.
+- **`testdata/canonical-hashing/vectors.json`**: 11 vectors — empty
+  object/array, key sorting at multiple nesting levels, array-order
+  preservation, non-ASCII text, a `decimal-string` value, small
+  integers/booleans, and the full `trade-intent.no-action-example.json`
+  golden fixture (the one containing the float-formatting caveat's actual
+  test case, `"confidence": 0.0`).
+- **`scripts/validate_schemas.py`** now also verifies the canonical-hashing
+  vectors, so `python scripts/validate_schemas.py` remains the one
+  command that checks everything in this package.
+- **Cross-repo verification, not just documentation**: added 6 tests to
+  `market-intelligence-mcp`'s `market_intelligence_core::sha256` module
+  (`canonical_hashing_spec_conformance`) that hash the *same* inputs as
+  this package's vectors and assert the *exact same* committed hash
+  strings — including the float-formatting caveat's own test case,
+  which passes, confirming Rust's `serde_json` and Python's `json` module
+  really do agree for this system's actual values rather than the spec
+  merely asserting they should. `market-intelligence-mcp`'s
+  `evidence_builder::build_evidence_bundle` (added in that repo's own
+  latest pass) is the first real producer of a `canonical-hash` in this
+  system, and needed no code change to conform — `serde_json::Value`'s
+  `Object` is a `BTreeMap` in that workspace (no `preserve_order`
+  feature), so sorted-key output was already free.
+
 ## Unreleased (2)
 
 - Added `docs/REQUIREMENTS_METHODOLOGY.md`: the shared DO-178-inspired
