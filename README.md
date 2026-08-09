@@ -2,7 +2,7 @@
 
 Canonical, versioned schema package shared by three sibling repositories:
 
-- [`smart-dynamic-hedge`](https://github.com/rhamenator/smart-dynamic-hedge) — strategy, research, GUI, and autonomy plane.
+- [`smart-dynamic-hedge-project`](https://github.com/rhamenator/smart-dynamic-hedge-project) — strategy, research, GUI, and autonomy plane.
 - [`market-intelligence-mcp`](https://github.com/rhamenator/market-intelligence-mcp) — lawful public/licensed market-intelligence collection.
 - [`trade-guard-mcp`](https://github.com/rhamenator/trade-guard-mcp) — authoritative account state, risk policy, and execution.
 
@@ -128,3 +128,10 @@ phased delivery plan this repository is Phase 1 of.
 
 GNU General Public License v3.0 (or, at your option, any later version). See
 [LICENSE](LICENSE) and [NOTICE](NOTICE).
+
+## Security and publication status
+
+Report schema-integrity or supply-chain concerns through the private process in
+[SECURITY.md](SECURITY.md). The completed pre-publication checks and remaining
+limitations are recorded in
+[docs/PUBLICATION_READINESS.md](docs/PUBLICATION_READINESS.md).
