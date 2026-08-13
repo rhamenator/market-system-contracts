@@ -1,0 +1,52 @@
+name: Release contract bundles
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - run: python scripts/validate_schemas.py
+      - name: Test shell installer
+        run: |
+          chmod +x install.sh
+          MARKET_SYSTEM_CONTRACTS_HOME="$RUNNER_TEMP/contracts" ./install.sh
+          test -f "$RUNNER_TEMP/contracts/schemas/2.0.0/trade-intent.schema.json"
+      - name: Build bundles
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          if [[ "$GITHUB_REF_TYPE" != tag ]]; then version="2.0.${GITHUB_RUN_NUMBER}"; fi
+          root="market-system-contracts-${version}"
+          mkdir -p "dist/$root"
+          cp -R schemas docs testdata install.sh install.ps1 README.md LICENSE NOTICE "dist/$root/"
+          chmod +x "dist/$root/install.sh"
+          (cd dist && zip -qr "${root}.zip" "$root")
+          tar -C dist -czf "dist/${root}.tar.gz" "$root"
+          sha256sum "dist/${root}.zip" "dist/${root}.tar.gz" > "dist/${root}.sha256"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: market-system-contracts-installers
+          path: |
+            dist/*.zip
+            dist/*.tar.gz
+            dist/*.sha256
+          if-no-files-found: error
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: gh release create "$GITHUB_REF_NAME" dist/*.zip dist/*.tar.gz dist/*.sha256 --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
